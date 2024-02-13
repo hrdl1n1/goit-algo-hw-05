@@ -2,6 +2,7 @@ import os
 import sys
 import pathlib
 from collections import Counter
+from typing import List
 
 # Створюємо словник типів помилок
 mistake_dict = {'ERROR', 'INFO', 'DEBUG', 'WARNING'}
@@ -41,11 +42,12 @@ def display_log_counts(errors_dict):
 
 
 # Функція для фільтрування журналів за рівнем
-def filter_logs_by_level(list, level):
-    print(f'Деталі логів для рівня {level}:')
-    for item in list:
+def filter_logs_by_level(logs: List[dict], level: str) -> List[dict]:
+    filtered_logs = []
+    for item in logs:
         if item['type'] == level:
-            print(f"{item['date']} {item['time']} - {item['mistake']}")
+            filtered_logs.append(item)
+    return filtered_logs
 
 
 try:
@@ -57,8 +59,15 @@ try:
 
     log_level = sys.argv[2]  # Отримуємо рівень журналу з аргументів командного рядка
     if log_level.upper() in mistake_dict:  # Перевіряємо, чи введено коректний рівень журналу
-        filter_logs_by_level(dict_lines, log_level.upper())  # Фільтруємо і відображаємо журнали за вказаним рівнем
+        filtered_logs = filter_logs_by_level(dict_lines, log_level.upper())
+        print(f'Деталі логів для рівня {log_level}:')
+        for log in filtered_logs:
+            print(f"{log['date']} {log['time']} - {log['mistake']}")
     else:
         print('Некоректний параметр логування')  # Якщо рівень журналу введено некоректно, виводимо повідомлення
-except:
-    pass
+except IndexError:
+    print("Введіть шлях до файлу та рівень журналу як аргументи командного рядка.")
+except FileNotFoundError:
+    print("Вказаний файл не існує.")
+except Exception as e:
+    print(f"Виникла помилка: {e}")

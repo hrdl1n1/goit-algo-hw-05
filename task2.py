@@ -3,7 +3,7 @@ from typing import Callable
 
 def generator_numbers(text: str):
     # Регулярний вираз для пошуку дійсних чисел
-    pattern = r'\b\d+\.\d+\b'  # Враховуємо десяткові дроби
+    pattern = r'\b(?:\d+\.\d+|\d+\b\.\d+)\b'  # Враховуємо десяткові дроби та числа перед крапкою
     # Пошук у тексті за допомогою регулярних виразів
     for match in re.finditer(pattern, text):
         yield float(match.group())
