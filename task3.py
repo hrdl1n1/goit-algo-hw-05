@@ -41,19 +41,25 @@ def display_log_counts(errors_dict):
         print(f'{key}\t\t | {value}')
 
 
-# Функція для фільтрування журналів за рівнем
+# Функція для фільтрування журналів за рівнем з використанням filter
 def filter_logs_by_level(logs: List[dict], level: str) -> List[dict]:
-    filtered_logs = []
-    for item in logs:
-        if item['type'] == level:
-            filtered_logs.append(item)
-    return filtered_logs
+    return list(filter(lambda x: x['type'] == level, logs))
+
+
+# Функція для сортування журналів за датою та часом з використанням sorted та lambda
+def sort_logs_by_date(logs: List[dict]) -> List[dict]:
+    return sorted(logs, key=lambda x: (x['date'], x['time']))
+
+
+# Функція для отримання списку лише дат журналів з використанням map
+def get_dates(logs: List[dict]) -> List[str]:
+    return list(map(lambda x: x['date'], logs))
 
 
 try:
     input = sys.argv[1]  # Отримуємо шлях до файлу з аргументів командного рядка
-    adress = pathlib.Path(input)  # Конвертуємо у об'єкт шляху
-    dict_lines = load_logs(adress)  # Завантажуємо журнали з файлу
+    address = pathlib.Path(input)  # Конвертуємо у об'єкт шляху
+    dict_lines = load_logs(address)  # Завантажуємо журнали з файлу
     conuted_logs = count_logs_by_level(dict_lines)  # Підраховуємо кількість журналів за рівнями
     display_log_counts(conuted_logs)  # Відображаємо кількість журналів за рівнями
 
